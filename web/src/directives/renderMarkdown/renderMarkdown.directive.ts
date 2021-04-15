@@ -2,10 +2,13 @@ import {Directive, Input, Optional, ElementRef, OnChanges, SimpleChanges, PLATFO
 import {isPlatformBrowser, DOCUMENT} from "@angular/common";
 import {Router, ActivatedRoute} from "@angular/router";
 import {GlobalNotificationsService} from "@anglr/notifications";
-import {nameof} from "@jscrpt/common";
+import {extend, nameof} from "@jscrpt/common";
 
 import {HelpService} from "../../services/help.service";
 import {renderMarkdown, handleHelpServiceError, handleRouterLink} from "../../misc/utils";
+import {RENDER_MARKDOWN_CONFIG} from '../../misc/tokens';
+import {RenderMarkdownConfig} from '../../misc/renderMarkdown.config';
+import {DEFAULT_RENDER_MARKDOWN_CONFIG} from '../../misc/renderMarkdownConfig.default';
 
 /**
  * Directive that renders markdown inside
@@ -74,8 +77,10 @@ export class RenderMarkdownDirective implements OnChanges
                 protected _route: ActivatedRoute,
                 @Optional() protected _notifications: GlobalNotificationsService,
                 @Inject(DOCUMENT) protected _document: HTMLDocument,
-                @Inject(PLATFORM_ID) protected _platformId: Object)
+                @Inject(PLATFORM_ID) protected _platformId: Object,
+                @Inject(RENDER_MARKDOWN_CONFIG) @Optional() protected _renderMarkdownConfig?: RenderMarkdownConfig)
     {
+        this._renderMarkdownConfig = extend(true, {}, DEFAULT_RENDER_MARKDOWN_CONFIG, this._renderMarkdownConfig);
     }
 
     //######################### public methods - implementation of OnChanges #########################
@@ -148,7 +153,7 @@ export class RenderMarkdownDirective implements OnChanges
      */
     protected async _renderMarkdown(markdown: string)
     {
-        this._element.nativeElement.innerHTML = await this.filterHtml(renderMarkdown(await this.filterMd(markdown), this._router, this._route, this._document, this.charMap, this.baseUrl, this.assetsPathPrefix));
+        this._element.nativeElement.innerHTML = await this.filterHtml(renderMarkdown(await this.filterMd(markdown), this._renderMarkdownConfig, this._router, this._route, this._document, this.charMap, this.baseUrl, this.assetsPathPrefix));
 
         this._scrollIntoView();
     }

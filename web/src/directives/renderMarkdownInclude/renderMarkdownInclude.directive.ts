@@ -6,6 +6,8 @@ import {GlobalNotificationsService} from '@anglr/notifications';
 
 import {RenderMarkdownDirective} from '../renderMarkdown/renderMarkdown.directive';
 import {HelpService} from '../../services/help.service';
+import {RENDER_MARKDOWN_CONFIG} from '../../misc/tokens';
+import {RenderMarkdownConfig} from '../../misc/renderMarkdown.config';
 
 /**
  * Directive used for custom rendering of markdown with support of INCLUDEMD syntax
@@ -24,9 +26,10 @@ export class RenderMarkdownIncludeDirective extends RenderMarkdownDirective
                 @Optional() notifications: GlobalNotificationsService,
                 @Inject(DOCUMENT) document: HTMLDocument,
                 @Inject(PLATFORM_ID) platformId: Object,
-                protected _http: HttpClient)
+                protected _http: HttpClient,
+                @Inject(RENDER_MARKDOWN_CONFIG) @Optional() renderMarkdownConfig?: RenderMarkdownConfig)
     {
-        super(helpSvc, element, router, route, notifications, document, platformId);
+        super(helpSvc, element, router, route, notifications, document, platformId, renderMarkdownConfig);
     }
 
     //######################### public methods #########################

@@ -1,0 +1,8 @@
+{
+    "name": "@anglr/md-help-mermaid",
+    "module": "./dist/es5/mermaid/index.js",
+    "esm2015": "./dist/es2015/mermaid/index.js",
+    "esm5": "./dist/es5/mermaid/index.js",
+    "typings": "./index.d.ts",
+    "sideEffects": false
+}

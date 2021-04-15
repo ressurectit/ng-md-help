@@ -5,11 +5,13 @@ import {isBlank} from '@jscrpt/common';
 import {MonoTypeOperatorFunction, Observable, EMPTY} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import marked from 'marked';
-import hljs from 'highlight.js';
+
+import {RenderMarkdownConfig} from './renderMarkdown.config';
 
 /**
  * Renders markdown to html
  * @param markdown - Markdown that will be rendered to html
+ * @param config - Configuration object for render markdown
  * @param router - Angular router used for generating links
  * @param route - Current route used during generation of relative links
  * @param document - HTML document instance
@@ -17,7 +19,7 @@ import hljs from 'highlight.js';
  * @param baseUrl - Base url used for routing links
  * @param assetsPathPrefix - Path for static assets
  */
-export function renderMarkdown(markdown: string, router: Router, route: ActivatedRoute, document: HTMLDocument, charMap: Object = {}, baseUrl: string = "", assetsPathPrefix: string = 'dist/md'): string
+export function renderMarkdown(markdown: string, config: RenderMarkdownConfig ,router: Router, route: ActivatedRoute, document: HTMLDocument, charMap: Object = {}, baseUrl: string = "", assetsPathPrefix: string = 'dist/md'): string
 {
 
     console.log(router, route, document, charMap, baseUrl, assetsPathPrefix);
@@ -89,11 +91,23 @@ export function renderMarkdown(markdown: string, router: Router, route: Activate
 
     const renderer: marked.Renderer = <any><Partial<marked.Renderer>>
     {
-        code: (code: string, infostring: string, _escaped: boolean): string =>
+        code: (code: string, language: string|undefined, isEscaped: boolean): string =>
         {
-            const validLanguage = hljs.getLanguage(infostring) ? infostring : 'plaintext';
+            console.log('cfig', config);
 
-            return `<pre><code class="hljs language-${infostring}">${hljs.highlight(validLanguage, code).value}</code></pre>`;
+            //language is in code renderers
+            if(language in config?.codeRenderers)
+            {
+                return config.codeRenderers[language](code, language, isEscaped);
+            }
+
+            //use default code renderer
+            if(config?.codeRenderers?._)
+            {
+                return config.codeRenderers._(code, language, isEscaped);
+            }
+
+            return `<pre><code class="language-${language}">${code}</code></pre>`;
         }
     }
 

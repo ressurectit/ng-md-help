@@ -1,6 +1,18 @@
 # Changelog
 
-## Version 8.0.0 (2021-02-22)
+## Version 8.0.0 (2021-04-15)
+
+### Features
+
+- new `RenderMarkdownConfig` interface as config for render markdown function
+    - new `CodeRenderersConfig` interface as code renderers configuration
+- new `DEFAULT_RENDER_MARKDOWN_CONFIG` default configuration for `RenderMarkdownConfig`
+- new `RENDER_MARKDOWN_CONFIG` as injection token used for injecting render markdown config
+- new `CodeRenderer` interface as code renderer that handles rendering block of code
+- new `HighlightJsCodeRenderer` function as code renderer using highlight js
+- added *subpackage* `@anglr/md-help/mermaid`
+- *subpackage* `@anglr/md-help/mermaid`
+    - new `MermaidCodeRenderer` function as code renderer using mermaid
 
 ### BREAKING CHANGES
 
@@ -8,6 +20,11 @@
 - minimal supported version of `@jscrpt/common` is `1.2.0`
 - minimal supported version of `marked` is `2.0.0`
 - minimal supported version of `highlight.js` is `10.6.0`
+- minimal supported version of `mermaid` is `8.9.2`
+- `RenderMarkdownDirective` constructor has new optional parameter
+- `RenderMarkdownIncludeDirective` constructor has new optional parameter
+- `BaseHelpComponent` constructor has new optional parameter
+- `renderMarkdown` function has new signature, added new parameter with configuration
 
 ## Version 7.0.1
 

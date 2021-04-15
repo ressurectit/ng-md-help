@@ -2,9 +2,13 @@ import {AfterViewInit, ElementRef, ViewChild, HostListener, Inject, PLATFORM_ID,
 import {isPlatformBrowser, DOCUMENT} from "@angular/common";
 import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
 import {GlobalNotificationsService} from "@anglr/notifications";
+import {extend} from '@jscrpt/common';
 
 import {HelpService} from "../services/help.service";
 import {renderMarkdown, handleRouterLink, handleHelpServiceError} from "./utils";
+import {RenderMarkdownConfig} from './renderMarkdown.config';
+import {DEFAULT_RENDER_MARKDOWN_CONFIG} from './renderMarkdownConfig.default';
+import {RENDER_MARKDOWN_CONFIG} from './tokens';
 
 /**
  * Base component for displaying help pages
@@ -48,8 +52,10 @@ export abstract class BaseHelpComponent implements AfterViewInit
                 protected _router: Router,
                 @Optional() protected _notifications: GlobalNotificationsService,
                 @Inject(DOCUMENT) protected _document: HTMLDocument,
-                @Inject(PLATFORM_ID) protected _platformId: Object)
+                @Inject(PLATFORM_ID) protected _platformId: Object,
+                @Inject(RENDER_MARKDOWN_CONFIG) @Optional() protected _renderMarkdownConfig?: RenderMarkdownConfig)
     {
+        this._renderMarkdownConfig = extend(true, {}, DEFAULT_RENDER_MARKDOWN_CONFIG, this._renderMarkdownConfig);
     }
 
     //######################### public methods - implementation of AfterViewInit #########################
@@ -98,7 +104,7 @@ export abstract class BaseHelpComponent implements AfterViewInit
             .pipe(handleHelpServiceError(this._showNotFound.bind(this), this._notifications))
             .subscribe(async content =>
             {
-                this.content.nativeElement.innerHTML = await this._filterHtml(renderMarkdown(await this._filterMd(content), this._router, this._route, this._document, this._charMap, this._baseUrl, this._assetsPathPrefix));
+                this.content.nativeElement.innerHTML = await this._filterHtml(renderMarkdown(await this._filterMd(content), this._renderMarkdownConfig, this._router, this._route, this._document, this._charMap, this._baseUrl, this._assetsPathPrefix));
 
                 this._scrollIntoView();
             });
