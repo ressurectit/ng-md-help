@@ -1,10 +1,10 @@
-import {Router, ActivatedRoute} from '@angular/router';
+import {Router, ActivatedRoute, NavigationExtras} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import {GlobalNotificationsService} from '@anglr/notifications';
-import {isBlank} from '@jscrpt/common';
+import {isBlank, validHtmlId} from '@jscrpt/common';
 import {MonoTypeOperatorFunction, Observable, EMPTY} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import marked from 'marked';
+import marked, {Slugger} from 'marked';
 
 import {RenderMarkdownConfig} from './renderMarkdown.config';
 
@@ -19,82 +19,13 @@ import {RenderMarkdownConfig} from './renderMarkdown.config';
  * @param baseUrl - Base url used for routing links
  * @param assetsPathPrefix - Path for static assets
  */
-export function renderMarkdown(markdown: string, config: RenderMarkdownConfig ,router: Router, route: ActivatedRoute, document: HTMLDocument, charMap: Object = {}, baseUrl: string = "", assetsPathPrefix: string = 'dist/md'): string
+export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, router: Router, route: ActivatedRoute, document: HTMLDocument, charMap: Object = {}, baseUrl: string = "", assetsPathPrefix: string = 'dist/md'): string
 {
-
-    console.log(router, route, document, charMap, baseUrl, assetsPathPrefix);
-
     // Override function
-    // renderer.heading = (text: string, level: number, _raw: string) =>
-    // {
-    //     var escapedText = validHtmlId(text, charMap);
-
-    //     return `<h${level} id="${escapedText}">${text}</h${level}>`;
-    // };
-
-    // renderer.link = (href: string, _title: string, text: string) =>
-    // {
-    //     let currentUrl = getCurrentUrlPrefix(document);
-    //     href = href.replace(new RegExp(`^${currentUrl}`), "");
-
-    //     //internal links containing .md are replaced
-    //     if(href.indexOf('http') !== 0)
-    //     {
-    //         href = href.replace(/\.md($|#)/gm, '$1');
-    //         href = href.replace(/^\.\//gm, '../');
-
-    //         let routeParams: NavigationExtras = {};
-
-    //         //handle fragment
-    //         if(href.indexOf('#') >= 0)
-    //         {
-    //             routeParams.fragment = validHtmlId(href.replace(/^.*?#/gm, ''), charMap);
-    //         }
-
-    //         //handle relative links
-    //         if(href.startsWith('../'))
-    //         {
-    //             routeParams.relativeTo = route;
-
-    //             href = router.serializeUrl(router.createUrlTree([href.replace(/#.*?$/gm, '')], routeParams));
-    //         }
-    //         //handle fragment links
-    //         else if(href.startsWith("#"))
-    //         {
-    //             routeParams.relativeTo = route;
-
-    //             href = router.serializeUrl(router.createUrlTree(['.'], routeParams));
-    //         }
-    //         else
-    //         {
-    //             href = router.serializeUrl(router.createUrlTree([`${baseUrl}${href.replace(/#.*?$/gm, "")}`], routeParams));
-    //         }
-    //     }
-
-    //     return `<a href="${href}">${text}</a>`;
-    // };
-
-    // renderer.code = function(code: string, language: string)
-    // {
-    //     return `<pre><code class="hljs ${language}">${highlightjs.highlight(language, code).value}</code></pre>`;
-    // };
-
-    // renderer.image = (href: string, _title: string, text: string) =>
-    // {
-    //     if(href.indexOf('http') === 0 || href.indexOf("data:image") > -1)
-    //     {
-    //         return `<img src="${href}" alt="${text}">`;
-    //     }
-
-    //     return `<img src="${assetsPathPrefix}${href}" alt="${text}">`;
-    // };
-
     const renderer: marked.Renderer = <any><Partial<marked.Renderer>>
     {
         code: (code: string, language: string|undefined, isEscaped: boolean): string =>
         {
-            console.log('cfig', config);
-
             //language is in code renderers
             if(language in config?.codeRenderers)
             {
@@ -108,6 +39,62 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig ,r
             }
 
             return `<pre><code class="language-${language}">${code}</code></pre>`;
+        },
+        image: (href: string|null, _title: string|null, text: string): string =>
+        {
+            if(href.indexOf('http') === 0 || href.indexOf("data:image") > -1)
+            {
+                return `<img src="${href}" alt="${text}">`;
+            }
+    
+            return `<img src="${assetsPathPrefix}${href}" alt="${text}">`;
+        },
+        heading: (text: string, level: 1 | 2 | 3 | 4 | 5 | 6, _raw: string, _slugger: Slugger): string =>
+        {
+            let escapedText = validHtmlId(text, charMap);
+
+            return `<h${level} id="${escapedText}">${text}</h${level}>`;
+        },
+        link: (href: string|null, _title: string|null, text: string): string =>
+        {
+            let currentUrl = getCurrentUrlPrefix(document);
+            href = href.replace(new RegExp(`^${currentUrl}`), "");
+
+            //internal links containing .md are replaced
+            if(href.indexOf('http') !== 0)
+            {
+                href = href.replace(/\.md($|#)/gm, '$1');
+                href = href.replace(/^\.\//gm, '../');
+
+                let routeParams: NavigationExtras = {};
+
+                //handle fragment
+                if(href.indexOf('#') >= 0)
+                {
+                    routeParams.fragment = validHtmlId(href.replace(/^.*?#/gm, ''), charMap);
+                }
+
+                //handle relative links
+                if(href.startsWith('../'))
+                {
+                    routeParams.relativeTo = route;
+
+                    href = router.serializeUrl(router.createUrlTree([href.replace(/#.*?$/gm, '')], routeParams));
+                }
+                //handle fragment links
+                else if(href.startsWith("#"))
+                {
+                    routeParams.relativeTo = route;
+
+                    href = router.serializeUrl(router.createUrlTree(['.'], routeParams));
+                }
+                else
+                {
+                    href = router.serializeUrl(router.createUrlTree([`${baseUrl}${href.replace(/#.*?$/gm, "")}`], routeParams));
+                }
+            }
+
+            return `<a href="${href}">${text}</a>`;
         }
     }
 
