@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 8.0.0 (2021-04-15)
+## Version 8.0.0 (2021-10-10)
 
 ### Features
 
@@ -10,21 +10,24 @@
 - new `RENDER_MARKDOWN_CONFIG` as injection token used for injecting render markdown config
 - new `CodeRenderer` interface as code renderer that handles rendering block of code
 - new `HighlightJsCodeRenderer` function as code renderer using highlight js
+- new `MD_HELP_NOTIFICATIONS` - injection token used for injecting notifications service used in this md help package
 - added *subpackage* `@anglr/md-help/mermaid`
 - *subpackage* `@anglr/md-help/mermaid`
     - new `MermaidCodeRenderer` function as code renderer using mermaid
 
 ### BREAKING CHANGES
 
-- minimal supported version of *Angular* is `11.0.0`
+- minimal supported version of *Angular* is `12.0.0`
 - minimal supported version of `@jscrpt/common` is `1.2.0`
 - minimal supported version of `marked` is `2.0.0`
 - minimal supported version of `highlight.js` is `10.6.0`
 - minimal supported version of `mermaid` is `8.9.2`
+- no longer depends on `@anglr/notifications` instead uses `@anglr/common` version `8.0.0-beta`
 - `RenderMarkdownDirective` constructor has new optional parameter
 - `RenderMarkdownIncludeDirective` constructor has new optional parameter
 - `BaseHelpComponent` constructor has new optional parameter
 - `renderMarkdown` function has new signature, added new parameter with configuration
+- `GlobalNotificationsService` replaced with `Notifications` from `@anglr/common` package, using `MD_HELP_NOTIFICATIONS` `InjectionToken`
 
 ## Version 7.0.1
 

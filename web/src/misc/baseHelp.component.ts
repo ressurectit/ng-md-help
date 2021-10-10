@@ -1,14 +1,14 @@
-import {AfterViewInit, ElementRef, ViewChild, HostListener, Inject, PLATFORM_ID, Optional, Directive} from "@angular/core";
-import {isPlatformBrowser, DOCUMENT} from "@angular/common";
-import {ActivatedRoute, Router, UrlSegment} from "@angular/router";
-import {GlobalNotificationsService} from "@anglr/notifications";
+import {AfterViewInit, ElementRef, ViewChild, HostListener, Inject, PLATFORM_ID, Optional, Directive} from '@angular/core';
+import {isPlatformBrowser, DOCUMENT} from '@angular/common';
+import {ActivatedRoute, Router, UrlSegment} from '@angular/router';
+import {Notifications} from '@anglr/common';
 import {extend} from '@jscrpt/common';
 
-import {HelpService} from "../services/help.service";
-import {renderMarkdown, handleRouterLink, handleHelpServiceError} from "./utils";
+import {HelpService} from '../services/help.service';
+import {renderMarkdown, handleRouterLink, handleHelpServiceError} from './utils';
 import {RenderMarkdownConfig} from './renderMarkdown.config';
 import {DEFAULT_RENDER_MARKDOWN_CONFIG} from './renderMarkdownConfig.default';
-import {RENDER_MARKDOWN_CONFIG} from './tokens';
+import {MD_HELP_NOTIFICATIONS, RENDER_MARKDOWN_CONFIG} from './tokens';
 
 /**
  * Base component for displaying help pages
@@ -26,7 +26,7 @@ export abstract class BaseHelpComponent implements AfterViewInit
     /**
      * Base url for md
      */
-    protected _baseUrl: string = "";
+    protected _baseUrl: string = '';
 
     /**
      * Path for static assets
@@ -50,8 +50,8 @@ export abstract class BaseHelpComponent implements AfterViewInit
     constructor(protected _route: ActivatedRoute,
                 protected _helpSvc: HelpService,
                 protected _router: Router,
-                @Optional() protected _notifications: GlobalNotificationsService,
-                @Inject(DOCUMENT) protected _document: HTMLDocument,
+                @Optional() @Inject(MD_HELP_NOTIFICATIONS) protected _notifications: Notifications,
+                @Inject(DOCUMENT) protected _document: Document,
                 @Inject(PLATFORM_ID) protected _platformId: Object,
                 @Inject(RENDER_MARKDOWN_CONFIG) @Optional() protected _renderMarkdownConfig?: RenderMarkdownConfig)
     {
@@ -63,7 +63,7 @@ export abstract class BaseHelpComponent implements AfterViewInit
     /**
      * Called when view was initialized
      */
-    public ngAfterViewInit()
+    public ngAfterViewInit(): void
     {
         this._route.url.subscribe(url =>
         {
@@ -81,7 +81,7 @@ export abstract class BaseHelpComponent implements AfterViewInit
      * @param target - Target that was clicked
      */
     @HostListener('click', ['$event'])
-    public processClick(target: MouseEvent)
+    public processClick(target: MouseEvent): boolean
     {
         return handleRouterLink(target, this._router, this._document);
     }
@@ -91,9 +91,9 @@ export abstract class BaseHelpComponent implements AfterViewInit
     /**
      * Renders content
      */
-    protected _renderContent(url: UrlSegment[])
+    protected _renderContent(url: UrlSegment[]): void
     {
-        let parsedUrl = url.map(url => url.path).join("/");
+        const parsedUrl = url.map(url => url.path).join('/');
 
         if(!parsedUrl)
         {
@@ -113,7 +113,7 @@ export abstract class BaseHelpComponent implements AfterViewInit
     /**
      * Redirects to not found page
      */
-    protected abstract _showNotFound();
+    protected abstract _showNotFound(): void;
 
     /**
      * Filters out parts of markdown that should not be processed
@@ -136,15 +136,15 @@ export abstract class BaseHelpComponent implements AfterViewInit
     /**
      * Scrolls into view fragment element
      */
-    protected _scrollIntoView()
+    protected _scrollIntoView(): void
     {
         if(this._isBrowser && this._route.snapshot.fragment)
         {
-            let element = this._document.getElementById(this._route.snapshot.fragment);
+            const element = this._document.getElementById(this._route.snapshot.fragment);
 
             if(element)
             {
-                element.scrollIntoView({behavior: "smooth"});
+                element.scrollIntoView({behavior: 'smooth'});
             }
         }
     }

@@ -1,5 +1,5 @@
-import {Directive, Input, HostListener, ElementRef} from "@angular/core";
-import {Subject, Observable} from "rxjs";
+import {Directive, Input, HostListener, ElementRef} from '@angular/core';
+import {Subject, Observable} from 'rxjs';
 
 /**
  * Directive used for highligting active menuitem and also reacts to changes of new menuitem selected
@@ -47,7 +47,7 @@ export class MdMenuItemDirective
      * @internal
      */
     @HostListener('click', ['$event'])
-    public clickHandler(event: MouseEvent)
+    public clickHandler(event: MouseEvent): void
     {
         event.preventDefault();
         event.stopPropagation();
@@ -62,7 +62,7 @@ export class MdMenuItemDirective
      * @param cssClass - Css class to be set
      * @param active - Indication whether set as active
      */
-    public setActive(cssClass: string, active: boolean = true)
+    public setActive(cssClass: string, active: boolean = true): void
     {
         if(active)
         {

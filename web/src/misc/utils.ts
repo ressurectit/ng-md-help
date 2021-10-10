@@ -1,6 +1,6 @@
 import {Router, ActivatedRoute, NavigationExtras} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
-import {GlobalNotificationsService} from '@anglr/notifications';
+import {Notifications} from '@anglr/common';
 import {isBlank, validHtmlId} from '@jscrpt/common';
 import {MonoTypeOperatorFunction, Observable, EMPTY} from 'rxjs';
 import {catchError} from 'rxjs/operators';
@@ -19,7 +19,7 @@ import {RenderMarkdownConfig} from './renderMarkdown.config';
  * @param baseUrl - Base url used for routing links
  * @param assetsPathPrefix - Path for static assets
  */
-export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, router: Router, route: ActivatedRoute, document: HTMLDocument, charMap: Object = {}, baseUrl: string = "", assetsPathPrefix: string = 'dist/md'): string
+export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, router: Router, route: ActivatedRoute, document: Document, charMap: Object = {}, baseUrl: string = '', assetsPathPrefix: string = 'dist/md'): string
 {
     // Override function
     const renderer: marked.Renderer = <any><Partial<marked.Renderer>>
@@ -42,7 +42,7 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
         },
         image: (href: string|null, _title: string|null, text: string): string =>
         {
-            if(href.indexOf('http') === 0 || href.indexOf("data:image") > -1)
+            if(href.indexOf('http') === 0 || href.indexOf('data:image') > -1)
             {
                 return `<img src="${href}" alt="${text}">`;
             }
@@ -51,14 +51,14 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
         },
         heading: (text: string, level: 1 | 2 | 3 | 4 | 5 | 6, _raw: string, _slugger: Slugger): string =>
         {
-            let escapedText = validHtmlId(text, charMap);
+            const escapedText = validHtmlId(text, charMap);
 
             return `<h${level} id="${escapedText}">${text}</h${level}>`;
         },
         link: (href: string|null, _title: string|null, text: string): string =>
         {
-            let currentUrl = getCurrentUrlPrefix(document);
-            href = href.replace(new RegExp(`^${currentUrl}`), "");
+            const currentUrl = getCurrentUrlPrefix(document);
+            href = href.replace(new RegExp(`^${currentUrl}`), '');
 
             //internal links containing .md are replaced
             if(href.indexOf('http') !== 0)
@@ -66,7 +66,7 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
                 href = href.replace(/\.md($|#)/gm, '$1');
                 href = href.replace(/^\.\//gm, '../');
 
-                let routeParams: NavigationExtras = {};
+                const routeParams: NavigationExtras = {};
 
                 //handle fragment
                 if(href.indexOf('#') >= 0)
@@ -82,7 +82,7 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
                     href = router.serializeUrl(router.createUrlTree([href.replace(/#.*?$/gm, '')], routeParams));
                 }
                 //handle fragment links
-                else if(href.startsWith("#"))
+                else if(href.startsWith('#'))
                 {
                     routeParams.relativeTo = route;
 
@@ -90,13 +90,13 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
                 }
                 else
                 {
-                    href = router.serializeUrl(router.createUrlTree([`${baseUrl}${href.replace(/#.*?$/gm, "")}`], routeParams));
+                    href = router.serializeUrl(router.createUrlTree([`${baseUrl}${href.replace(/#.*?$/gm, '')}`], routeParams));
                 }
             }
 
             return `<a href="${href}">${text}</a>`;
         }
-    }
+    };
 
     marked.use(
     {
@@ -114,17 +114,17 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
  */
 export function handleRouterLink(event: MouseEvent, router: Router, document: HTMLDocument)
 {
-    let target = event.target as HTMLElement;
+    const target = event.target as HTMLElement;
 
     //not anchor
-    if(target.nodeName != "A" || isBlank(target.attributes['href']?.value))
+    if(target.nodeName != 'A' || isBlank(target.attributes['href']?.value))
     {
         return true;
     }
 
     let href: string = target.attributes['href'].value;
-    let currentUrl = getCurrentUrlPrefix(document);
-    href = href.replace(new RegExp(`^${currentUrl}`), "");
+    const currentUrl = getCurrentUrlPrefix(document);
+    href = href.replace(new RegExp(`^${currentUrl}`), '');
 
     //absolute url to different page
     if(href.indexOf('http') === 0)
@@ -132,14 +132,14 @@ export function handleRouterLink(event: MouseEvent, router: Router, document: HT
         return true;
     }
 
-    let parsedUrl = router.parseUrl(href);
+    const parsedUrl = router.parseUrl(href);
 
     router.navigateByUrl(parsedUrl).then(() =>
     {
         //scroll into view
         if(parsedUrl.fragment)
         {
-            document.querySelector(`#${parsedUrl.fragment}`)?.scrollIntoView({behavior: "smooth"});
+            document.querySelector(`#${parsedUrl.fragment}`)?.scrollIntoView({behavior: 'smooth'});
         }
     });
 
@@ -163,7 +163,7 @@ export function getCurrentUrlPrefix(document: HTMLDocument): string
  * @param showNotFound - Method used for displaying not found
  * @param notifications - Service used for notifications
  */
-export function handleHelpServiceError(showNotFound: () => void, notifications: GlobalNotificationsService): MonoTypeOperatorFunction<string|null>
+export function handleHelpServiceError(showNotFound: () => void, notifications: Notifications): MonoTypeOperatorFunction<string|null>
 {
     return (source: Observable<string|null>) =>
     {

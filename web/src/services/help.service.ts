@@ -1,4 +1,4 @@
-import {Observable} from "rxjs";
+import {Observable} from 'rxjs';
 
 /**
  * Abstract service used to obtain help files

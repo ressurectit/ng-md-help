@@ -1,12 +1,12 @@
-import {Directive, Input, Optional, ElementRef, OnChanges, SimpleChanges, PLATFORM_ID, Inject, HostListener} from "@angular/core";
-import {isPlatformBrowser, DOCUMENT} from "@angular/common";
-import {Router, ActivatedRoute} from "@angular/router";
-import {GlobalNotificationsService} from "@anglr/notifications";
-import {extend, nameof} from "@jscrpt/common";
+import {Directive, Input, Optional, ElementRef, OnChanges, SimpleChanges, PLATFORM_ID, Inject, HostListener} from '@angular/core';
+import {isPlatformBrowser, DOCUMENT} from '@angular/common';
+import {Router, ActivatedRoute} from '@angular/router';
+import {Notifications} from '@anglr/common';
+import {extend, nameof} from '@jscrpt/common';
 
-import {HelpService} from "../../services/help.service";
-import {renderMarkdown, handleHelpServiceError, handleRouterLink} from "../../misc/utils";
-import {RENDER_MARKDOWN_CONFIG} from '../../misc/tokens';
+import {HelpService} from '../../services/help.service';
+import {renderMarkdown, handleHelpServiceError, handleRouterLink} from '../../misc/utils';
+import {MD_HELP_NOTIFICATIONS, RENDER_MARKDOWN_CONFIG} from '../../misc/tokens';
 import {RenderMarkdownConfig} from '../../misc/renderMarkdown.config';
 import {DEFAULT_RENDER_MARKDOWN_CONFIG} from '../../misc/renderMarkdownConfig.default';
 
@@ -44,7 +44,7 @@ export class RenderMarkdownDirective implements OnChanges
      * Base url for md
      */
     @Input()
-    public baseUrl: string = "";
+    public baseUrl: string = '';
 
     /**
      * Charmap used for normalization
@@ -65,7 +65,7 @@ export class RenderMarkdownDirective implements OnChanges
      * @param target - Target that was clicked
      */
     @HostListener('click', ['$event'])
-    public processClick(target: MouseEvent)
+    public processClick(target: MouseEvent): boolean
     {
         return handleRouterLink(target, this._router, this._document);
     }
@@ -75,8 +75,8 @@ export class RenderMarkdownDirective implements OnChanges
                 protected _element: ElementRef<HTMLElement>,
                 protected _router: Router,
                 protected _route: ActivatedRoute,
-                @Optional() protected _notifications: GlobalNotificationsService,
-                @Inject(DOCUMENT) protected _document: HTMLDocument,
+                @Optional() @Inject(MD_HELP_NOTIFICATIONS) protected _notifications: Notifications,
+                @Inject(DOCUMENT) protected _document: Document,
                 @Inject(PLATFORM_ID) protected _platformId: Object,
                 @Inject(RENDER_MARKDOWN_CONFIG) @Optional() protected _renderMarkdownConfig?: RenderMarkdownConfig)
     {
@@ -135,7 +135,7 @@ export class RenderMarkdownDirective implements OnChanges
     /**
      * Loads markdown using source
      */
-    protected _loadMarkdown()
+    protected _loadMarkdown(): void
     {
         if(!this.source || !this._helpSvc)
         {
@@ -151,7 +151,7 @@ export class RenderMarkdownDirective implements OnChanges
      * Renders markdown
      * @param markdown - Markdown to be rendered
      */
-    protected async _renderMarkdown(markdown: string)
+    protected async _renderMarkdown(markdown: string): Promise<void>
     {
         this._element.nativeElement.innerHTML = await this.filterHtml(renderMarkdown(await this.filterMd(markdown), this._renderMarkdownConfig, this._router, this._route, this._document, this.charMap, this.baseUrl, this.assetsPathPrefix));
 
@@ -161,15 +161,15 @@ export class RenderMarkdownDirective implements OnChanges
     /**
      * Scrolls into view fragment element
      */
-    protected _scrollIntoView()
+    protected _scrollIntoView(): void
     {
         if(this._isBrowser && this._route.snapshot.fragment)
         {
-            let element = this._document.getElementById(this._route.snapshot.fragment);
+            const element = this._document.getElementById(this._route.snapshot.fragment);
 
             if(element)
             {
-                element.scrollIntoView({behavior: "smooth"});
+                element.scrollIntoView({behavior: 'smooth'});
             }
         }
     }

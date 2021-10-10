@@ -2,11 +2,11 @@ import {Directive, Optional, ElementRef, Inject, PLATFORM_ID} from '@angular/cor
 import {Router, ActivatedRoute} from '@angular/router';
 import {DOCUMENT} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
-import {GlobalNotificationsService} from '@anglr/notifications';
+import {Notifications} from '@anglr/common';
 
 import {RenderMarkdownDirective} from '../renderMarkdown/renderMarkdown.directive';
 import {HelpService} from '../../services/help.service';
-import {RENDER_MARKDOWN_CONFIG} from '../../misc/tokens';
+import {MD_HELP_NOTIFICATIONS, RENDER_MARKDOWN_CONFIG} from '../../misc/tokens';
 import {RenderMarkdownConfig} from '../../misc/renderMarkdown.config';
 
 /**
@@ -14,7 +14,7 @@ import {RenderMarkdownConfig} from '../../misc/renderMarkdown.config';
  */
 @Directive(
 {
-    selector: "[renderMdInclude]"
+    selector: '[renderMdInclude]'
 })
 export class RenderMarkdownIncludeDirective extends RenderMarkdownDirective
 {
@@ -23,8 +23,8 @@ export class RenderMarkdownIncludeDirective extends RenderMarkdownDirective
                 element: ElementRef<HTMLElement>,
                 router: Router,
                 route: ActivatedRoute,
-                @Optional() notifications: GlobalNotificationsService,
-                @Inject(DOCUMENT) document: HTMLDocument,
+                @Optional() @Inject(MD_HELP_NOTIFICATIONS) notifications: Notifications,
+                @Inject(DOCUMENT) document: Document,
                 @Inject(PLATFORM_ID) platformId: Object,
                 protected _http: HttpClient,
                 @Inject(RENDER_MARKDOWN_CONFIG) @Optional() renderMarkdownConfig?: RenderMarkdownConfig)
@@ -42,11 +42,11 @@ export class RenderMarkdownIncludeDirective extends RenderMarkdownDirective
     {
         let matches: RegExpExecArray;
 
-        while(matches = /@INCLUDEMD#(.*?)@/.exec(md))
+        while((matches = /@INCLUDEMD#(.*?)@/.exec(md)))
         {
             let includeMd = await this._http.get(matches[1], {responseType: 'text'}).toPromise();
 
-            includeMd = includeMd.replace(/\/#\//g, "/");
+            includeMd = includeMd.replace(/\/#\//g, '/');
 
             md = md.replace(/@INCLUDEMD#(.*?)@/, includeMd);
         }

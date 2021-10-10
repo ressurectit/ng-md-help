@@ -1,8 +1,8 @@
-import {Component, ChangeDetectionStrategy, QueryList, ContentChildren, AfterContentInit, OnDestroy, OnInit, ChangeDetectorRef, Input} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
-import {Subscription} from "rxjs";
+import {Component, ChangeDetectionStrategy, QueryList, ContentChildren, AfterContentInit, OnDestroy, OnInit, ChangeDetectorRef, Input} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
 
-import {MdMenuItemDirective} from "../../directives/mdMenuItem/mdMenuItem.directive";
+import {MdMenuItemDirective} from '../../directives/mdMenuItem/mdMenuItem.directive';
 
 /**
  * Component used for gathering mdHelp links
@@ -69,11 +69,11 @@ export class MdMenuComponent implements AfterContentInit, OnDestroy, OnInit
     /**
      * Initialize component
      */
-    public ngOnInit()
+    public ngOnInit(): void
     {
         this._routeChangeSubscription = this._route.url.subscribe(url =>
         {
-            let parsedUrl = url.map(url => url.path).join("/");
+            const parsedUrl = url.map(url => url.path).join('/');
 
             if(parsedUrl)
             {
@@ -89,7 +89,7 @@ export class MdMenuComponent implements AfterContentInit, OnDestroy, OnInit
     /**
      * Called when content was initialized
      */
-    public ngAfterContentInit()
+    public ngAfterContentInit(): void
     {
         this.items.forEach(item =>
         {
@@ -107,7 +107,7 @@ export class MdMenuComponent implements AfterContentInit, OnDestroy, OnInit
     /**
      * Called when component is destroyed
      */
-    public ngOnDestroy()
+    public ngOnDestroy(): void
     {
         this._itemsClickSubscriptions.forEach(subscription =>
         {
@@ -128,7 +128,7 @@ export class MdMenuComponent implements AfterContentInit, OnDestroy, OnInit
     /**
      * Sets items as active
      */
-    protected _setActiveItem()
+    protected _setActiveItem(): void
     {
         if(!this.items || !this.activePath ||!this.activeCssClass)
         {
