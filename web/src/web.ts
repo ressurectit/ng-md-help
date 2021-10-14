@@ -10,4 +10,5 @@ export * from './modules/markdown.module';
 export * from './directives/renderMarkdown/renderMarkdown.directive';
 export * from './directives/renderMarkdownInclude/renderMarkdownInclude.directive';
 export * from './directives/mdMenuItem/mdMenuItem.directive';
+export * from './pipes/renderMarkdown.pipe';
 export * from './components/mdMenu/mdMenu.component';

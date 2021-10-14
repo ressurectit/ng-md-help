@@ -5,7 +5,7 @@ import {Notifications} from '@anglr/common';
 import {extend} from '@jscrpt/common';
 
 import {HelpService} from '../services/help.service';
-import {renderMarkdown, handleRouterLink, handleHelpServiceError} from './utils';
+import {renderMarkdown, handleRouterLink, handleHelpServiceError, updateRenderMarkdownConfig} from './utils';
 import {RenderMarkdownConfig} from './renderMarkdown.config';
 import {DEFAULT_RENDER_MARKDOWN_CONFIG} from './renderMarkdownConfig.default';
 import {MD_HELP_NOTIFICATIONS, RENDER_MARKDOWN_CONFIG} from './tokens';
@@ -26,17 +26,17 @@ export abstract class BaseHelpComponent implements AfterViewInit
     /**
      * Base url for md
      */
-    protected _baseUrl: string = '';
+    protected _baseUrl: string;
 
     /**
      * Path for static assets
      */
-    protected _assetsPathPrefix: string = 'dist/md';
+    protected _assetsPathPrefix: string;
     
     /**
      * Charmap used for normalization
      */
-    protected _charMap: Object = {};
+    protected _charMap: Object;
 
     //######################### public properties - children #########################
 
@@ -56,6 +56,8 @@ export abstract class BaseHelpComponent implements AfterViewInit
                 @Inject(RENDER_MARKDOWN_CONFIG) @Optional() protected _renderMarkdownConfig?: RenderMarkdownConfig)
     {
         this._renderMarkdownConfig = extend(true, {}, DEFAULT_RENDER_MARKDOWN_CONFIG, this._renderMarkdownConfig);
+
+        updateRenderMarkdownConfig(this._renderMarkdownConfig, this._charMap, this._baseUrl, this._assetsPathPrefix);
     }
 
     //######################### public methods - implementation of AfterViewInit #########################
@@ -104,7 +106,7 @@ export abstract class BaseHelpComponent implements AfterViewInit
             .pipe(handleHelpServiceError(this._showNotFound.bind(this), this._notifications))
             .subscribe(async content =>
             {
-                this.content.nativeElement.innerHTML = await this._filterHtml(renderMarkdown(await this._filterMd(content), this._renderMarkdownConfig, this._router, this._route, this._document, this._charMap, this._baseUrl, this._assetsPathPrefix));
+                this.content.nativeElement.innerHTML = await this._filterHtml(renderMarkdown(await this._filterMd(content), this._renderMarkdownConfig, this._router, this._route, this._document));
 
                 this._scrollIntoView();
             });

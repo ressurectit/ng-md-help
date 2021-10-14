@@ -9,5 +9,8 @@ export const DEFAULT_RENDER_MARKDOWN_CONFIG: RenderMarkdownConfig =
     codeRenderers:
     {
         _: HighlightJsCodeRenderer
-    }
+    },
+    assetsPathPrefix: '',
+    baseUrl: '',
+    charMap: {}
 };

@@ -5,10 +5,11 @@
     "main": "dist/index.js",
     "sideEffects": false,
     "scripts": {
-        "build": "npm run build:node && npm run build:web",
+        "build": "npm run build:node && npm run build:web && npm run build:mermaid",
         "build:node": "copyfiles -u 1 src/index.js dist",
         "build:web": "ngc -p web/tsconfig.es5.json && ngc -p web/tsconfig.es2015.json",
-        "clean": "rimraf dist tests **/tsdoc-metadata.json web/**/*.d.ts web/**/*.d.ts.map */*.metadata.json ./*.metadata.json ./*.d.ts ./*d.ts.map */dist",
+        "build:mermaid": "ngc -p mermaid/tsconfig.es5.json && ngc -p mermaid/tsconfig.es2015.json",
+        "clean": "rimraf dist tests **/tsdoc-metadata.json web/**/*.d.ts web/**/*.d.ts.map mermaid/**/*.d.ts mermaid/**/*.d.ts.map */*.metadata.json ./*.metadata.json ./*.d.ts ./*d.ts.map */dist",
         "clean:duplicates": "rimraf */dist/*/src",
         "clean:deps": "rimraf package-lock.json node_modules",
         "clean:all": "npm run clean && npm run clean:deps",
@@ -22,11 +23,14 @@
         "deploy": "npm publish --loglevel error",
         "deploy:next": "npm publish --tag next --loglevel error",
         "doc": "path-exists docs && npm run doc:generate || echo \"No docs generated!\"",
-        "doc:generate": "npm run doc:generate:web && npm run doc:save",
+        "doc:generate": "npm run doc:generate:web && npm run doc:generate:mermaid && npm run doc:save",
         "doc:save": "cd docs && git add . && git commit -m \"INT: updated API docs ng-md-help\" && git push && cd ..",
         "doc:generate:web": "rimraf docs/content/api/ng-md-help && npm run doc:json:web && npm run doc:md:web",
         "doc:json:web": "api-extractor run --local --verbose -c web/api-extractor.json",
-        "doc:md:web": "api-documenter markdown -i web/temp -o docs/content/api/ng-md-help && rimraf web/temp"
+        "doc:md:web": "api-documenter markdown -i web/temp -o docs/content/api/ng-md-help && rimraf web/temp",
+        "doc:generate:mermaid": "rimraf docs/content/api/ng-md-help-mermaid && npm run doc:json:mermaid && npm run doc:md:mermaid",
+        "doc:json:mermaid": "api-extractor run --local --verbose -c mermaid/api-extractor.json",
+        "doc:md:mermaid": "api-documenter markdown -i mermaid/temp -o docs/content/api/ng-md-help-mermaid && rimraf mermaid/temp"
     },
     "repository": {
         "type": "git",

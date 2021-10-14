@@ -1,16 +1,22 @@
 # Changelog
 
-## Version 8.0.0 (2021-10-10)
+## Version 8.0.0 (2021-10-14)
 
 ### Features
 
 - new `RenderMarkdownConfig` interface as config for render markdown function
-    - new `CodeRenderersConfig` interface as code renderers configuration
+    - property `codeRenderers` code renderer configuration
+        - new `CodeRenderersConfig` interface as code renderers configuration
+    - property `charMap` char map used for normalization of ids and anchor fragments
+    - property `baseUrl` base url used for routing links
+    - property `assetsPathPrefix` path for static assets
 - new `DEFAULT_RENDER_MARKDOWN_CONFIG` default configuration for `RenderMarkdownConfig`
 - new `RENDER_MARKDOWN_CONFIG` as injection token used for injecting render markdown config
 - new `CodeRenderer` interface as code renderer that handles rendering block of code
 - new `HighlightJsCodeRenderer` function as code renderer using highlight js
-- new `MD_HELP_NOTIFICATIONS` - injection token used for injecting notifications service used in this md help package
+- new `updateRenderMarkdownConfig` function that updates render markdown config with custom values
+- new `MD_HELP_NOTIFICATIONS` injection token used for injecting notifications service used in this md help package
+- new `RenderMarkdownPipe` pipe that converts markdown string into html
 - added *subpackage* `@anglr/md-help/mermaid`
 - *subpackage* `@anglr/md-help/mermaid`
     - new `MermaidCodeRenderer` function as code renderer using mermaid
@@ -26,7 +32,7 @@
 - `RenderMarkdownDirective` constructor has new optional parameter
 - `RenderMarkdownIncludeDirective` constructor has new optional parameter
 - `BaseHelpComponent` constructor has new optional parameter
-- `renderMarkdown` function has new signature, added new parameter with configuration
+- `renderMarkdown` function has new signature, added new parameter with configuration and moved some parameters into it
 - `GlobalNotificationsService` replaced with `Notifications` from `@anglr/common` package, using `MD_HELP_NOTIFICATIONS` `InjectionToken`
 
 ## Version 7.0.1

@@ -5,7 +5,7 @@ import {Notifications} from '@anglr/common';
 import {extend, nameof} from '@jscrpt/common';
 
 import {HelpService} from '../../services/help.service';
-import {renderMarkdown, handleHelpServiceError, handleRouterLink} from '../../misc/utils';
+import {renderMarkdown, handleHelpServiceError, handleRouterLink, updateRenderMarkdownConfig} from '../../misc/utils';
 import {MD_HELP_NOTIFICATIONS, RENDER_MARKDOWN_CONFIG} from '../../misc/tokens';
 import {RenderMarkdownConfig} from '../../misc/renderMarkdown.config';
 import {DEFAULT_RENDER_MARKDOWN_CONFIG} from '../../misc/renderMarkdownConfig.default';
@@ -26,6 +26,11 @@ export class RenderMarkdownDirective implements OnChanges
      */
     protected _isBrowser: boolean = isPlatformBrowser(this._platformId);
 
+    /**
+     * Current value of config
+     */
+    protected _config: RenderMarkdownConfig;
+
     //######################### public properties - inputs #########################
 
     /**
@@ -44,19 +49,19 @@ export class RenderMarkdownDirective implements OnChanges
      * Base url for md
      */
     @Input()
-    public baseUrl: string = '';
+    public baseUrl: string;
 
     /**
      * Charmap used for normalization
      */
     @Input()
-    public charMap: Object = {};
+    public charMap: Object;
 
     /**
      * Path for static assets
      */
     @Input()
-    public assetsPathPrefix: string = 'dist/md';
+    public assetsPathPrefix: string;
 
     //######################### public methods - host #########################
 
@@ -81,6 +86,8 @@ export class RenderMarkdownDirective implements OnChanges
                 @Inject(RENDER_MARKDOWN_CONFIG) @Optional() protected _renderMarkdownConfig?: RenderMarkdownConfig)
     {
         this._renderMarkdownConfig = extend(true, {}, DEFAULT_RENDER_MARKDOWN_CONFIG, this._renderMarkdownConfig);
+
+        this._config = extend(true, {}, this._renderMarkdownConfig);
     }
 
     //######################### public methods - implementation of OnChanges #########################
@@ -100,6 +107,15 @@ export class RenderMarkdownDirective implements OnChanges
         if(nameof<RenderMarkdownDirective>('source') in changes && this.source && !this.renderMarkdown)
         {
             this._loadMarkdown();
+        }
+
+        if(nameof<RenderMarkdownDirective>('assetsPathPrefix') in changes ||
+           nameof<RenderMarkdownDirective>('baseUrl') in changes ||
+           nameof<RenderMarkdownDirective>('charMap') in changes)
+        {
+            this._config = extend(true, {}, this._renderMarkdownConfig);
+
+            updateRenderMarkdownConfig(this._config, this.charMap, this.baseUrl, this.assetsPathPrefix);
         }
     }
 
@@ -153,7 +169,7 @@ export class RenderMarkdownDirective implements OnChanges
      */
     protected async _renderMarkdown(markdown: string): Promise<void>
     {
-        this._element.nativeElement.innerHTML = await this.filterHtml(renderMarkdown(await this.filterMd(markdown), this._renderMarkdownConfig, this._router, this._route, this._document, this.charMap, this.baseUrl, this.assetsPathPrefix));
+        this._element.nativeElement.innerHTML = await this.filterHtml(renderMarkdown(await this.filterMd(markdown), this._config, this._router, this._route, this._document));
 
         this._scrollIntoView();
     }

@@ -1,7 +1,7 @@
 import {Router, ActivatedRoute, NavigationExtras} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Notifications} from '@anglr/common';
-import {isBlank, validHtmlId} from '@jscrpt/common';
+import {isBlank, isPresent, validHtmlId} from '@jscrpt/common';
 import {MonoTypeOperatorFunction, Observable, EMPTY} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import marked, {Slugger} from 'marked';
@@ -15,11 +15,8 @@ import {RenderMarkdownConfig} from './renderMarkdown.config';
  * @param router - Angular router used for generating links
  * @param route - Current route used during generation of relative links
  * @param document - HTML document instance
- * @param charMap - Char map used for normalization of ids and anchor fragments
- * @param baseUrl - Base url used for routing links
- * @param assetsPathPrefix - Path for static assets
  */
-export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, router: Router, route: ActivatedRoute, document: Document, charMap: Object = {}, baseUrl: string = '', assetsPathPrefix: string = 'dist/md'): string
+export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, router: Router, route: ActivatedRoute, document: Document): string
 {
     // Override function
     const renderer: marked.Renderer = <any><Partial<marked.Renderer>>
@@ -47,11 +44,11 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
                 return `<img src="${href}" alt="${text}">`;
             }
     
-            return `<img src="${assetsPathPrefix}${href}" alt="${text}">`;
+            return `<img src="${config.assetsPathPrefix ?? ''}${href}" alt="${text}">`;
         },
         heading: (text: string, level: 1 | 2 | 3 | 4 | 5 | 6, _raw: string, _slugger: Slugger): string =>
         {
-            const escapedText = validHtmlId(text, charMap);
+            const escapedText = validHtmlId(text, config.charMap ?? {});
 
             return `<h${level} id="${escapedText}">${text}</h${level}>`;
         },
@@ -71,7 +68,7 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
                 //handle fragment
                 if(href.indexOf('#') >= 0)
                 {
-                    routeParams.fragment = validHtmlId(href.replace(/^.*?#/gm, ''), charMap);
+                    routeParams.fragment = validHtmlId(href.replace(/^.*?#/gm, ''), (config.charMap ?? {}));
                 }
 
                 //handle relative links
@@ -90,7 +87,7 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
                 }
                 else
                 {
-                    href = router.serializeUrl(router.createUrlTree([`${baseUrl}${href.replace(/#.*?$/gm, '')}`], routeParams));
+                    href = router.serializeUrl(router.createUrlTree([`${config.baseUrl ?? ''}${href.replace(/#.*?$/gm, '')}`], routeParams));
                 }
             }
 
@@ -112,7 +109,7 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
  * @param router - Router that is used for changing url
  * @param document - HTML document instance
  */
-export function handleRouterLink(event: MouseEvent, router: Router, document: HTMLDocument)
+export function handleRouterLink(event: MouseEvent, router: Router, document: Document): boolean
 {
     const target = event.target as HTMLElement;
 
@@ -153,7 +150,7 @@ export function handleRouterLink(event: MouseEvent, router: Router, document: HT
  * Gets current URL prefix (contains protocol and host)
  * @param document - Html document to be used for computation of current URL prefix
  */
-export function getCurrentUrlPrefix(document: HTMLDocument): string
+export function getCurrentUrlPrefix(document: Document): string
 {
     return `${document.location.protocol}//${document.location.host}`;
 }
@@ -194,4 +191,28 @@ export function handleHelpServiceError(showNotFound: () => void, notifications: 
             return EMPTY;
         }));
     };
+}
+
+/**
+ * Updates render markdown config with custom values
+ * @param charMap - Char map used for normalization of ids and anchor fragments
+ * @param baseUrl - Base url used for routing links
+ * @param assetsPathPrefix - Path for static assets
+ */
+export function updateRenderMarkdownConfig(config: RenderMarkdownConfig, charMap: Object, baseUrl: string, assetsPathPrefix: string): void
+{
+    if(isPresent(charMap))
+    {
+        config.charMap = charMap;
+    }
+
+    if(isPresent(baseUrl))
+    {
+        config.baseUrl = baseUrl;
+    }
+
+    if(isPresent(assetsPathPrefix))
+    {
+        config.assetsPathPrefix = assetsPathPrefix;
+    }
 }

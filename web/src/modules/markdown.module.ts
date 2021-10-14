@@ -4,6 +4,7 @@ import {RenderMarkdownDirective} from '../directives/renderMarkdown/renderMarkdo
 import {RenderMarkdownIncludeDirective} from '../directives/renderMarkdownInclude/renderMarkdownInclude.directive';
 import {MdMenuItemDirective} from '../directives/mdMenuItem/mdMenuItem.directive';
 import {MdMenuComponent} from '../components/mdMenu/mdMenu.component';
+import {RenderMarkdownPipe} from '../pipes/renderMarkdown.pipe';
 
 /**
  * Module used for processing markdown
@@ -15,14 +16,16 @@ import {MdMenuComponent} from '../components/mdMenu/mdMenu.component';
         RenderMarkdownDirective,
         RenderMarkdownIncludeDirective,
         MdMenuComponent,
-        MdMenuItemDirective
+        MdMenuItemDirective,
+        RenderMarkdownPipe,
     ],
     exports:
     [
         RenderMarkdownDirective,
         RenderMarkdownIncludeDirective,
         MdMenuComponent,
-        MdMenuItemDirective
+        MdMenuItemDirective,
+        RenderMarkdownPipe,
     ]
 })
 export class MarkdownModule
