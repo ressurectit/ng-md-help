@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 8.0.0 (2021-10-14)
+## Version 8.0.0 (2022-02-17)
 
 ### Features
 
@@ -28,7 +28,7 @@
 - minimal supported version of `marked` is `2.0.0`
 - minimal supported version of `highlight.js` is `10.6.0`
 - minimal supported version of `mermaid` is `8.9.2`
-- no longer depends on `@anglr/notifications` instead uses `@anglr/common` version `8.0.0-beta`
+- no longer depends on `@anglr/notifications` instead uses `@anglr/common` version `9.0.0`
 - `RenderMarkdownDirective` constructor has new optional parameter
 - `RenderMarkdownIncludeDirective` constructor has new optional parameter
 - `BaseHelpComponent` constructor has new optional parameter
