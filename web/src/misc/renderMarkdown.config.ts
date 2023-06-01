@@ -14,11 +14,6 @@ export interface CodeRenderersConfig
 export interface RenderMarkdownConfig
 {
     /**
-     * Char map used for normalization of ids and anchor fragments
-     */
-    charMap?: Object;
-    
-    /**
      * Base url used for routing links
      */
     baseUrl?: string;

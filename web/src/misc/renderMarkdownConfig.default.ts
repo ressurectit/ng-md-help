@@ -12,5 +12,4 @@ export const DEFAULT_RENDER_MARKDOWN_CONFIG: RenderMarkdownConfig =
     },
     assetsPathPrefix: '',
     baseUrl: '',
-    charMap: {}
 };

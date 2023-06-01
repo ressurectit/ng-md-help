@@ -22,8 +22,8 @@ export class MdMenuItemDirective
     /**
      * Relative path for markdown file
      */
-    @Input('mdMenuItem')
-    public mdPath: string;
+    @Input({alias: 'mdMenuItem', required: true})
+    public mdPath: string|undefined|null;
 
     //######################### public properties #########################
 

@@ -29,13 +29,12 @@ export class RenderMarkdownPipe implements PipeTransform
      * @param markdown - Markdown string to be converted
      * @param baseUrl - Base url used for routing links
      * @param assetsPathPrefix - Path for static assets
-     * @param charMap - Char map used for normalization of ids and anchor fragments
      */
-    public transform(markdown: string, baseUrl?: string, assetsPathPrefix?: string, charMap?: Object): string
+    public transform(markdown: string, baseUrl?: string, assetsPathPrefix?: string): string
     {
-        const config = extend(true, {}, this._config);
+        const config = extend<RenderMarkdownConfig>(true, {}, this._config);
 
-        updateRenderMarkdownConfig(config, charMap, baseUrl, assetsPathPrefix);
+        updateRenderMarkdownConfig(config, baseUrl, assetsPathPrefix);
 
         return renderMarkdown(markdown, config, this._router, this._route, this._document);
     }

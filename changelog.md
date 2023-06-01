@@ -1,5 +1,47 @@
 # Changelog
 
+## Version 9.0.0 (2023-05-01)
+
+### BREAKING CHANGES
+
+- minimal supported version of `@angular` is `16.0.3`
+- minimal supported version of `@rxjs` is `7.5.7`
+- minimal supported version of `@anglr/common` is `16.0.0`
+- minimal supported version of `@jscrpt/common` is `3.4.0`
+- dropped support of `NodeJs` lower than `16.14`
+- *subpackage* `@anglr/md-help/web`
+    - updated `BaseHelpComponent` component
+        - protected property `_isBrowser` renamed to `isBrowser`
+        - protected property `_baseUrl` renamed to `baseUrl`
+        - protected property `baseUrl` is now nullable correctly
+        - protected property `_assetsPathPrefix` renamed to `assetsPathPrefix`
+        - protected property `assetsPathPrefix` is now nullable correctly
+        - protected propert `_charMap` was removed, not needed anymore
+        - protected property `_route` renamed to `route`
+        - protected property `_helpSvc` renamed to `helpSvc`
+        - protected property `_router` renamed to `router`
+        - protected property `_notifications` renamed to `notifications`
+        - protected property `_document` renamed to `document`
+        - protected property `_platformId` renamed to `platformId`
+        - protected property `_renderMarkdownConfig` renamed to `renderMarkdownConfig`
+        - public property `content` is now nullable correctly
+    - updated `updateRenderMarkdownConfig` function
+        - removed `charMap` argument, not needed anymore
+    - updated `RenderMarkdownConfig` interface
+        - removed `charMap` property
+    - updated `RenderMarkdownPipe` pipe
+        - removed last parameter of transform
+    - updated `MdMenuComponent` component
+        - protected property `assetsPathPrefix` is now nullable correctly
+    - updated `RenderMarkdownDirective` directive
+        - removed property `charMap`
+        - protected property `_isBrowser` renamed to `isBrowser`
+        - protected property `_config` renamed to `config`
+        - protected property `renderMarkdown` is now nullable correctly
+        - protected property `source` is now nullable correctly
+        - protected property `baseUrl` is now nullable correctly
+        - protected property `assetsPathPrefix` is now nullable correctly
+
 ## Version 8.0.0 (2022-02-17)
 
 ### Features

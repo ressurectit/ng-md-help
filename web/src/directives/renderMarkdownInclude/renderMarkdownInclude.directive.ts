@@ -3,6 +3,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {DOCUMENT} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {Notifications} from '@anglr/common';
+import {lastValueFrom} from '@jscrpt/common/rxjs';
 
 import {RenderMarkdownDirective} from '../renderMarkdown/renderMarkdown.directive';
 import {HelpService} from '../../services/help.service';
@@ -38,17 +39,17 @@ export class RenderMarkdownIncludeDirective extends RenderMarkdownDirective
      * Filters out parts of markdown that should not be processed
      * @param md - Markdown to be filtered
      */
-    public async filterMd(md: string): Promise<string>
+    public override async filterMd(md: string): Promise<string>
     {
-        let matches: RegExpExecArray;
+        let matches: RegExpExecArray|null;
 
         while((matches = /@INCLUDEMD#(.*?)@/.exec(md)))
         {
-            let includeMd = await this._http.get(matches[1], {responseType: 'text'}).toPromise();
+            let includeMd = await lastValueFrom(this._http.get(matches[1], {responseType: 'text'}));
 
-            includeMd = includeMd.replace(/\/#\//g, '/');
+            includeMd = includeMd?.replace(/\/#\//g, '/');
 
-            md = md.replace(/@INCLUDEMD#(.*?)@/, includeMd);
+            md = md.replace(/@INCLUDEMD#(.*?)@/, includeMd ?? '');
         }
 
         return md;

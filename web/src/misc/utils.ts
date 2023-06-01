@@ -1,7 +1,7 @@
 import {Router, ActivatedRoute, NavigationExtras} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Notifications} from '@anglr/common';
-import {isBlank, isPresent, validHtmlId} from '@jscrpt/common';
+import {isBlank, isPresent, normalizeAccent, validHtmlId} from '@jscrpt/common';
 import {MonoTypeOperatorFunction, Observable, EMPTY} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import marked, {Slugger} from 'marked';
@@ -24,7 +24,7 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
         code: (code: string, language: string|undefined, isEscaped: boolean): string =>
         {
             //language is in code renderers
-            if(language in config?.codeRenderers)
+            if(language && config.codeRenderers && language in config.codeRenderers)
             {
                 return config.codeRenderers[language](code, language, isEscaped);
             }
@@ -39,6 +39,8 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
         },
         image: (href: string|null, _title: string|null, text: string): string =>
         {
+            href ??= '';
+
             if(href.indexOf('http') === 0 || href.indexOf('data:image') > -1)
             {
                 return `<img src="${href}" alt="${text}">`;
@@ -48,13 +50,14 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
         },
         heading: (text: string, level: 1 | 2 | 3 | 4 | 5 | 6, _raw: string, _slugger: Slugger): string =>
         {
-            const escapedText = validHtmlId(text, config.charMap ?? {});
+            const escapedText = validHtmlId(text);
 
             return `<h${level} id="${escapedText}">${text}</h${level}>`;
         },
         link: (href: string|null, _title: string|null, text: string): string =>
         {
             const currentUrl = getCurrentUrlPrefix(document);
+            href ??= '';
             href = href.replace(new RegExp(`^${currentUrl}`), '');
 
             //internal links containing .md are replaced
@@ -68,7 +71,7 @@ export function renderMarkdown(markdown: string, config: RenderMarkdownConfig, r
                 //handle fragment
                 if(href.indexOf('#') >= 0)
                 {
-                    routeParams.fragment = validHtmlId(href.replace(/^.*?#/gm, ''), (config.charMap ?? {}));
+                    routeParams.fragment = validHtmlId(normalizeAccent(href.replace(/^.*?#/gm, '')));
                 }
 
                 //handle relative links
@@ -114,12 +117,12 @@ export function handleRouterLink(event: MouseEvent, router: Router, document: Do
     const target = event.target as HTMLElement;
 
     //not anchor
-    if(target.nodeName != 'A' || isBlank(target.attributes['href']?.value))
+    if(target.nodeName != 'A' || isBlank(target.attributes['href' as any]?.value))
     {
         return true;
     }
 
-    let href: string = target.attributes['href'].value;
+    let href: string = target.attributes['href' as any].value;
     const currentUrl = getCurrentUrlPrefix(document);
     href = href.replace(new RegExp(`^${currentUrl}`), '');
 
@@ -160,9 +163,9 @@ export function getCurrentUrlPrefix(document: Document): string
  * @param showNotFound - Method used for displaying not found
  * @param notifications - Service used for notifications
  */
-export function handleHelpServiceError(showNotFound: () => void, notifications: Notifications): MonoTypeOperatorFunction<string|null>
+export function handleHelpServiceError(showNotFound: () => void, notifications: Notifications): MonoTypeOperatorFunction<string>
 {
-    return (source: Observable<string|null>) =>
+    return (source: Observable<string>) =>
     {
         return source.pipe(catchError((err: HttpErrorResponse) =>
         {
@@ -195,17 +198,12 @@ export function handleHelpServiceError(showNotFound: () => void, notifications: 
 
 /**
  * Updates render markdown config with custom values
- * @param charMap - Char map used for normalization of ids and anchor fragments
+ * @param config - Configuration that will be extended
  * @param baseUrl - Base url used for routing links
  * @param assetsPathPrefix - Path for static assets
  */
-export function updateRenderMarkdownConfig(config: RenderMarkdownConfig, charMap: Object, baseUrl: string, assetsPathPrefix: string): void
+export function updateRenderMarkdownConfig(config: RenderMarkdownConfig, baseUrl: string|undefined|null, assetsPathPrefix: string|undefined|null): void
 {
-    if(isPresent(charMap))
-    {
-        config.charMap = charMap;
-    }
-
     if(isPresent(baseUrl))
     {
         config.baseUrl = baseUrl;

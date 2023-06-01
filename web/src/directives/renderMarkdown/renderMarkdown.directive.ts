@@ -24,12 +24,12 @@ export class RenderMarkdownDirective implements OnChanges
     /**
      * Indication whether is code running in browser
      */
-    protected _isBrowser: boolean = isPlatformBrowser(this._platformId);
+    protected isBrowser: boolean = isPlatformBrowser(this._platformId);
 
     /**
      * Current value of config
      */
-    protected _config: RenderMarkdownConfig;
+    protected config: RenderMarkdownConfig;
 
     //######################### public properties - inputs #########################
 
@@ -37,31 +37,25 @@ export class RenderMarkdownDirective implements OnChanges
      * Markdown string to be rendered
      */
     @Input()
-    public renderMarkdown: string;
+    public renderMarkdown: string|undefined|null;
 
     /**
      * Source string, used for obtaining markdown, using help service
      */
     @Input()
-    public source: string;
+    public source: string|undefined|null;
 
     /**
      * Base url for md
      */
     @Input()
-    public baseUrl: string;
-
-    /**
-     * Charmap used for normalization
-     */
-    @Input()
-    public charMap: Object;
+    public baseUrl: string|undefined|null;
 
     /**
      * Path for static assets
      */
     @Input()
-    public assetsPathPrefix: string;
+    public assetsPathPrefix: string|undefined|null;
 
     //######################### public methods - host #########################
 
@@ -85,9 +79,9 @@ export class RenderMarkdownDirective implements OnChanges
                 @Inject(PLATFORM_ID) protected _platformId: Object,
                 @Inject(RENDER_MARKDOWN_CONFIG) @Optional() protected _renderMarkdownConfig?: RenderMarkdownConfig)
     {
-        this._renderMarkdownConfig = extend(true, {}, DEFAULT_RENDER_MARKDOWN_CONFIG, this._renderMarkdownConfig);
+        this._renderMarkdownConfig = extend(true, {}, DEFAULT_RENDER_MARKDOWN_CONFIG, this._renderMarkdownConfig ?? {});
 
-        this._config = extend(true, {}, this._renderMarkdownConfig);
+        this.config = extend(true, {}, this._renderMarkdownConfig ?? {});
     }
 
     //######################### public methods - implementation of OnChanges #########################
@@ -110,12 +104,11 @@ export class RenderMarkdownDirective implements OnChanges
         }
 
         if(nameof<RenderMarkdownDirective>('assetsPathPrefix') in changes ||
-           nameof<RenderMarkdownDirective>('baseUrl') in changes ||
-           nameof<RenderMarkdownDirective>('charMap') in changes)
+           nameof<RenderMarkdownDirective>('baseUrl') in changes)
         {
-            this._config = extend(true, {}, this._renderMarkdownConfig);
+            this.config = extend(true, {}, this._renderMarkdownConfig ?? {});
 
-            updateRenderMarkdownConfig(this._config, this.charMap, this.baseUrl, this.assetsPathPrefix);
+            updateRenderMarkdownConfig(this.config, this.baseUrl, this.assetsPathPrefix);
         }
     }
 
@@ -169,7 +162,7 @@ export class RenderMarkdownDirective implements OnChanges
      */
     protected async _renderMarkdown(markdown: string): Promise<void>
     {
-        this._element.nativeElement.innerHTML = await this.filterHtml(renderMarkdown(await this.filterMd(markdown), this._config, this._router, this._route, this._document));
+        this._element.nativeElement.innerHTML = await this.filterHtml(renderMarkdown(await this.filterMd(markdown), this.config, this._router, this._route, this._document));
 
         this._scrollIntoView();
     }
@@ -179,7 +172,7 @@ export class RenderMarkdownDirective implements OnChanges
      */
     protected _scrollIntoView(): void
     {
-        if(this._isBrowser && this._route.snapshot.fragment)
+        if(this.isBrowser && this._route.snapshot.fragment)
         {
             const element = this._document.getElementById(this._route.snapshot.fragment);
 

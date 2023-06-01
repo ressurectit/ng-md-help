@@ -7,6 +7,8 @@ import {CodeRenderer} from './codeRenderer.interface';
  */
 export const HighlightJsCodeRenderer: CodeRenderer = (code: string, language: string|undefined, _isEscaped: boolean) =>
 {
+    language ??= 'unknown';
+
     const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
 
     return `<pre><code class="hljs language-${language}">${hljs.highlight(validLanguage, code).value}</code></pre>`;

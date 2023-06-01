@@ -21,43 +21,38 @@ export abstract class BaseHelpComponent implements AfterViewInit
     /**
      * Indication whether is code running in browser
      */
-    protected _isBrowser: boolean = isPlatformBrowser(this._platformId);
+    protected isBrowser: boolean = isPlatformBrowser(this.platformId);
 
     /**
      * Base url for md
      */
-    protected _baseUrl: string;
+    protected baseUrl: string|undefined|null;
 
     /**
      * Path for static assets
      */
-    protected _assetsPathPrefix: string;
+    protected assetsPathPrefix: string|undefined|null;
     
-    /**
-     * Charmap used for normalization
-     */
-    protected _charMap: Object;
-
     //######################### public properties - children #########################
 
     /**
      * Div that is used for displaying content
      */
     @ViewChild('content')
-    public content: ElementRef;
+    public content: ElementRef|undefined|null;
 
     //######################### constructor #########################
-    constructor(protected _route: ActivatedRoute,
-                protected _helpSvc: HelpService,
-                protected _router: Router,
-                @Optional() @Inject(MD_HELP_NOTIFICATIONS) protected _notifications: Notifications,
-                @Inject(DOCUMENT) protected _document: Document,
-                @Inject(PLATFORM_ID) protected _platformId: Object,
-                @Inject(RENDER_MARKDOWN_CONFIG) @Optional() protected _renderMarkdownConfig?: RenderMarkdownConfig)
+    constructor(protected route: ActivatedRoute,
+                protected helpSvc: HelpService,
+                protected router: Router,
+                @Optional() @Inject(MD_HELP_NOTIFICATIONS) protected notifications: Notifications,
+                @Inject(DOCUMENT) protected document: Document,
+                @Inject(PLATFORM_ID) protected platformId: Object,
+                @Inject(RENDER_MARKDOWN_CONFIG) @Optional() protected renderMarkdownConfig?: RenderMarkdownConfig)
     {
-        this._renderMarkdownConfig = extend(true, {}, DEFAULT_RENDER_MARKDOWN_CONFIG, this._renderMarkdownConfig);
+        this.renderMarkdownConfig = extend(true, {}, DEFAULT_RENDER_MARKDOWN_CONFIG, this.renderMarkdownConfig ?? {});
 
-        updateRenderMarkdownConfig(this._renderMarkdownConfig, this._charMap, this._baseUrl, this._assetsPathPrefix);
+        updateRenderMarkdownConfig(this.renderMarkdownConfig ?? {}, this.baseUrl, this.assetsPathPrefix);
     }
 
     //######################### public methods - implementation of AfterViewInit #########################
@@ -67,7 +62,7 @@ export abstract class BaseHelpComponent implements AfterViewInit
      */
     public ngAfterViewInit(): void
     {
-        this._route.url.subscribe(url =>
+        this.route.url.subscribe(url =>
         {
             if(this.content)
             {
@@ -85,7 +80,7 @@ export abstract class BaseHelpComponent implements AfterViewInit
     @HostListener('click', ['$event'])
     public processClick(target: MouseEvent): boolean
     {
-        return handleRouterLink(target, this._router, this._document);
+        return handleRouterLink(target, this.router, this.document);
     }
 
     //######################### protected methods #########################
@@ -102,11 +97,16 @@ export abstract class BaseHelpComponent implements AfterViewInit
             this._showNotFound();
         }
 
-        this._helpSvc.get(parsedUrl)
-            .pipe(handleHelpServiceError(this._showNotFound.bind(this), this._notifications))
+        this.helpSvc.get(parsedUrl)
+            .pipe(handleHelpServiceError(this._showNotFound.bind(this), this.notifications))
             .subscribe(async content =>
             {
-                this.content.nativeElement.innerHTML = await this._filterHtml(renderMarkdown(await this._filterMd(content), this._renderMarkdownConfig, this._router, this._route, this._document));
+                if(!this.content)
+                {
+                    return;
+                }
+
+                this.content.nativeElement.innerHTML = await this._filterHtml(renderMarkdown(await this._filterMd(content), this.renderMarkdownConfig ?? {}, this.router, this.route, this.document));
 
                 this._scrollIntoView();
             });
@@ -140,9 +140,9 @@ export abstract class BaseHelpComponent implements AfterViewInit
      */
     protected _scrollIntoView(): void
     {
-        if(this._isBrowser && this._route.snapshot.fragment)
+        if(this.isBrowser && this.route.snapshot.fragment)
         {
-            const element = this._document.getElementById(this._route.snapshot.fragment);
+            const element = this.document.getElementById(this.route.snapshot.fragment);
 
             if(element)
             {

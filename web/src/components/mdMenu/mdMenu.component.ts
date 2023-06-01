@@ -25,7 +25,7 @@ export class MdMenuComponent implements AfterContentInit, OnDestroy, OnInit
     /**
      * Subscription for changing route
      */
-    protected _routeChangeSubscription: Subscription;
+    protected _routeChangeSubscription: Subscription|undefined|null;
 
     //######################### public properties #########################
 
@@ -55,7 +55,7 @@ export class MdMenuComponent implements AfterContentInit, OnDestroy, OnInit
      * @internal
      */
     @ContentChildren(MdMenuItemDirective, {descendants: true})
-    public items: QueryList<MdMenuItemDirective>;
+    public items: QueryList<MdMenuItemDirective>|undefined|null;
 
     //######################### constructor #########################
     constructor(protected _route: ActivatedRoute,
@@ -91,7 +91,7 @@ export class MdMenuComponent implements AfterContentInit, OnDestroy, OnInit
      */
     public ngAfterContentInit(): void
     {
-        this.items.forEach(item =>
+        this.items?.forEach(item =>
         {
             this._itemsClickSubscriptions.push(item.click.subscribe(() =>
             {

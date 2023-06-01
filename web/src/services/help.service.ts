@@ -1,4 +1,4 @@
-import {Observable} from 'rxjs';
+import {NEVER, Observable} from 'rxjs';
 
 /**
  * Abstract service used to obtain help files
@@ -11,6 +11,6 @@ export abstract class HelpService
      */
     public get(_path: string): Observable<string>
     {
-        return null;
+        return NEVER;
     }
 }
