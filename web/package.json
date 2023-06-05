@@ -4,5 +4,5 @@
     "module": "../es2022/web/src/index.js",
     "es2022": "../es2020/web/src/index.js",
     "esm2022": "../es2020/web/src/index.js",
-    "typings": "./web/src/index.d.ts"
+    "typings": "./src/index.d.ts"
 }
