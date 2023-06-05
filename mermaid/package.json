@@ -1,9 +1,8 @@
 {
-    "name": "@anglr/common-date-fns",
+    "name": "@anglr/md-help-mermaid",
     "sideEffects": false,
-    "module": "../es2015/date-fns/src/index.js",
-    "es2015": "../es2015/date-fns/src/index.js",
-    "es2020": "../es2020/date-fns/src/index.js",
-    "esm2020": "../es2020/date-fns/src/index.js",
+    "module": "../es2022/mermaid/src/index.js",
+    "es2022": "../es2022/mermaid/src/index.js",
+    "esm2022": "../es2022/mermaid/src/index.js",
     "typings": "./src/index.d.ts"
-  }
+}
