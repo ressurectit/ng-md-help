@@ -1,1 +1,1 @@
-export * from './misc/codeRenderers/mermaidRenderer';
+export * from './misc/extensions/mermaid/mermaid.extension';

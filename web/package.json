@@ -1,8 +1,0 @@
-{
-    "name": "@anglr/md-help-web",
-    "sideEffects": false,
-    "module": "../es2022/web/src/index.js",
-    "es2022": "../es2020/web/src/index.js",
-    "esm2022": "../es2020/web/src/index.js",
-    "typings": "./src/index.d.ts"
-}

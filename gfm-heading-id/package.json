@@ -1,0 +1,8 @@
+{
+    "name": "@anglr/md-help-gfm-heading-id",
+    "sideEffects": false,
+    "module": "../es2022/gfm-heading-id/src/index.js",
+    "es2022": "../es2022/gfm-heading-id/src/index.js",
+    "esm2022": "../es2022/gfm-heading-id/src/index.js",
+    "typings": "./src/index.d.ts"
+}

@@ -1,0 +1,8 @@
+{
+    "name": "@anglr/md-help-highlightjs",
+    "sideEffects": false,
+    "module": "../es2022/highlightjs/src/index.js",
+    "es2022": "../es2022/highlightjs/src/index.js",
+    "esm2022": "../es2022/highlightjs/src/index.js",
+    "typings": "./src/index.d.ts"
+}

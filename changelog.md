@@ -1,5 +1,99 @@
 # Changelog
 
+## Version 10.0.0 (2024-08-05)
+
+### Features
+
+- new `MarkdownRendererExtension` interface, that is definition of markdown renderer extension
+    - **properties**
+        - `markedExtension` gets marked extension to be used
+- new `provideMarkdownRendererExtensions` function, that provides markdown renderer extensions
+- new `MARKDOWN_RENDERER_EXTENSIONS` injection token, that is injection token used for injecting markdown renderer extensions used for processing markdown
+- new `MarkdownRenderer` service, that is used for rendering markdown
+    - **methods**
+        - `transformMarkdown` transforms markdown into HTML
+- new `AssetsPathPrefixExtension` markdown renderer extension, that adds assets path prefix functionality to images links
+    - **implements**
+        - `MarkdownRendererExtension`
+- new `assetsPathPrefixExtension` function, that is factory for AssetsPathPrefixExtension with options
+- updated `MdMenuItemDirective` directive
+    - is now `standalone`
+    - directive directly handles click event, does not need anything else
+- updated `RenderMarkdownDirective` directive
+    - is now `standalone`
+- updated `RenderMarkdownIncludeDirective` directive
+    - is now `standalone`
+- updated `RenderMarkdownPipe` pipe
+    - is now `standalone`
+- new *subpackage* `@anglr/md-help/gfm-heading-id`
+- *subpackage* `@anglr/md-help/gfm-heading-id`
+    - new *optional dependency* `marked-gfm-heading-id` minimal version `4.0.0`
+    - new `GfmHeadingIdExtension` markdown renderer extension, that adds github flavored markdown heading functionality
+        - **implements**
+            - `MarkdownRendererExtension`
+    - new `gfmHeadingIdExtension` function, that is factory for GfmHeadingIdExtension with options
+- new *subpackage* `@anglr/md-help/baseurl`
+- *subpackage* `@anglr/md-help/baseurl`
+    - new *optional dependency* `marked-base-url` minimal version `1.1.4`
+    - new `BaseUrlExtension` markdown renderer extension, that adds baseUrl functionality for relative links
+        - **implements**
+            - `MarkdownRendererExtension`
+    - new `baseUrlExtension` function, that is factory for BaseUrlExtension with baseUrl parameter
+- new *subpackage* `@anglr/md-help/highlightjs`
+- *subpackage* `@anglr/md-help/highlightjs`
+    - new *optional dependency* `marked-highlight` minimal version `2.1.3`
+    - new `HighlightJsExtension` markdown renderer extension, that adds highlight js code highlighting functionality
+        - **implements**
+            - `MarkdownRendererExtension`
+- *subpackage* `@anglr/md-help/mermaid`
+    - added `MermaidExtension` markdown renderer extension, that adds mermaid functionality
+        - **implements**
+            - `MarkdownRendererExtension`
+
+### BREAKING CHANGES
+
+- peer dependencies reworked into `dependencies` and `optionalDependencies`
+- minimal supported version of `@angular` is `18.0.0`
+- minimal supported version of `@anglr/common` is `21.1.0`
+- minimal supported version of `@jscrpt/common` is `6.2.0`
+- minimal supported version of `tslib` is `2.6.2`
+- minimal supported version of `highlight.js` is `11.10.0`
+- minimal supported version of `marked` is `13.0.3`
+- minimal supported version of `mermaid` is `10.9.1`
+- dropped support of `NodeJs` lower than `18.13`
+- main entry `@anglr/md-help` is replaced with previous `@anglr/md-help/web`
+    - original `@anglr/md-help` used for Node is not working anymore and is removed
+- removed `MdMenuComponent` component, which was not generic enough to be used, no added value of this component
+- `RenderMarkdownIncludeDirective` not working right now, will be added in future
+- completely reworked rendering markdown, from functions to service
+    - `highlight.js` is now *optional dependency* and must be explicitly enabled
+    - all removed types are mentioned here, all new types will be as *features*
+    - removed `MdMenuComponent` component
+    - refactored `MdMenuItemDirective` directive
+    - removed `BaseHelpComponent ` component, use `RenderMarkdownDirective` for better customization instead
+    - removed `RenderMarkdownConfig` interface, replaced with TODO
+    - removed `CodeRenderersConfig` interface
+    - removed `CodeRenderer` interface, all code renderers are replaced with extensions
+    - removed `DEFAULT_RENDER_MARKDOWN_CONFIG` constant
+    - removed `RENDER_MARKDOWN_CONFIG` injection token
+    - removed `MD_HELP_NOTIFICATIONS` injection token, no longer needed, since package does not handle loading of markdowns
+    - removed `HelpService` service, no longer needed, since package does not handle loading of markdowns
+    - removed `updateRenderMarkdownConfig` function
+    - removed `handleHelpServiceError` function
+    - removed `renderMarkdown` function
+    - removed `MarkdownModule` module, replaced with standalone directives and pipes
+    - updated `RenderMarkdownPipe` pipe
+        - no longer allows directly changing of `baseUrl` and `assetsPathPrefix` you must use DI 
+    - updated `RenderMarkdownDirective` directive
+        - no longer supports loading markdown from service
+        - removed `source` input
+        - constructor does not have parameters anymore
+        - all protected methods and properties no longer starts with `_`
+    - *subpackage* `@anglr/md-help/mermaid`
+        - new *optional dependency* `d3`, minimal version `7.9.0`
+        - new *optional dependency* `dompurify`, minimal version `3.1.6`
+        - removed `MermaidCodeRenderer` code renderer, replaced with `MermaidExtension` markdown renderer extension
+
 ## Version 9.0.0 (2023-05-01)
 
 ### BREAKING CHANGES

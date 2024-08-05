@@ -1,7 +1,7 @@
 image: Visual Studio 2019
 
 environment:
-  nodejs_version: "16"
+  nodejs_version: "20"
 
 branches:
   only:
@@ -17,7 +17,9 @@ cache:
   - node_modules
 
 install:
-  - cmd: npm install --loglevel error --legacy-peer-deps
+  - cmd: npm install --loglevel error
+  - ps: Remove-Item "./node_modules/$((Get-Content .\package.json | ConvertFrom-Json).name)" -Recurse -Force
+  - ps: Remove-Item "./node_modules/ng-universal-demo" -Recurse -Force
   - cmd: npm run clean
 
 build: off

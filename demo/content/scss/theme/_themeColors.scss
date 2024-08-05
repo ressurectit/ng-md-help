@@ -1,0 +1,7 @@
+@use 'sass:map';
+
+@mixin buildThemeColors($theme)
+{
+    --page-side-width: #{map.get(map.get(map.get($theme, 'page'), 'side'), 'width')};
+    --page-content-width: #{map.get(map.get(map.get($theme, 'page'), 'content'), 'width')};
+}
