@@ -8,9 +8,9 @@ import {MarkedExtension, Token, Tokens} from 'marked';
 //TODO: make it working on SSR if possible
 
 /**
- * Definition of mermaid code
+ * Definition of mermaid code token
  */
-interface MermaidCode extends Tokens.Code
+export interface MermaidCode extends Tokens.Code
 {
     /**
      * Type that indicate that this token is 'code'

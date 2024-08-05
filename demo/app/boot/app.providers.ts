@@ -8,7 +8,7 @@ import {GlobalizationService, providePosition, provideLoggerConfig, DeveloperCon
 import {ReservedSpaceValidationErrorsContainerComponent, ValidationErrorRendererFactoryOptions, VALIDATION_ERROR_MESSAGES, VALIDATION_ERROR_RENDERER_FACTORY_OPTIONS} from '@anglr/common/forms';
 import {MovableTitledDialogComponent, TitledDialogServiceOptions, TitledDialogService, provideConfirmationDialogOptions} from '@anglr/common/material';
 import {FloatingUiDomPosition} from '@anglr/common/floating-ui';
-import {assetsPathPrefixExtension, provideMarkdownRendererExtensions} from '@anglr/md-help';
+import {assetsPathPrefixExtension, IncludeMarkdownExtension, provideMarkdownRendererExtensions} from '@anglr/md-help';
 import {GfmHeadingIdExtension} from '@anglr/md-help/gfm-heading-id';
 import {MermaidExtension} from '@anglr/md-help/mermaid';
 import {baseUrlExtension} from '@anglr/md-help/baseurl';
@@ -87,7 +87,8 @@ export const appProviders: (Provider|EnvironmentProviders)[] =
                                       HighlightJsExtension,
                                       baseUrlExtension('test/'),
                                       MermaidExtension,
-                                      assetsPathPrefixExtension('xawe')),
+                                      assetsPathPrefixExtension('xawe'),
+                                      IncludeMarkdownExtension,),
 
     //######################### TITLED DIALOG #########################
     importProvidersFrom(MatDialogModule),
