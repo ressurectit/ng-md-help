@@ -1,9 +1,10 @@
 # Changelog
 
-## Version 10.0.0 (2024-08-05)
+## Version 10.0.0 (2024-08-06)
 
 ### Features
 
+- new *dependency* `github-slugger` minimal version `2.0.0`
 - new `MarkdownRendererExtension` interface, that is definition of markdown renderer extension
     - **properties**
         - `markedExtension` gets marked extension to be used
@@ -24,6 +25,9 @@
         - `type` type that indicate that this token is 'includeMarkdown'
         - `link` link to markdown document that should be downloaded
         - `html` html to be rendered
+- new `GfmHeadingIdExtension` markdown renderer extension, that adds github flavored markdown heading functionality
+        - **implements**
+            - `MarkdownRendererExtension`
 - updated `MdMenuItemDirective` directive
     - is now `standalone`
     - directive directly handles click event, does not need anything else
@@ -31,13 +35,6 @@
     - is now `standalone`
 - updated `RenderMarkdownPipe` pipe
     - is now `standalone`
-- new *subpackage* `@anglr/md-help/gfm-heading-id`
-- *subpackage* `@anglr/md-help/gfm-heading-id`
-    - new *optional dependency* `marked-gfm-heading-id` minimal version `4.0.0`
-    - new `GfmHeadingIdExtension` markdown renderer extension, that adds github flavored markdown heading functionality
-        - **implements**
-            - `MarkdownRendererExtension`
-    - new `gfmHeadingIdExtension` function, that is factory for GfmHeadingIdExtension with options
 - new *subpackage* `@anglr/md-help/baseurl`
 - *subpackage* `@anglr/md-help/baseurl`
     - new *optional dependency* `marked-base-url` minimal version `1.1.4`
