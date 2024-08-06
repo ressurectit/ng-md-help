@@ -37,7 +37,7 @@ export class HighlightJsExtension implements MarkdownRendererExtension
             {
                 const language = hljs.getLanguage(lang) ? lang : 'plaintext';
 
-                return hljs.highlight(code, language).value;
+                return hljs.highlight(code, {language}).value;
             }
         });
     }
