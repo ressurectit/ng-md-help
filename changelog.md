@@ -26,8 +26,9 @@
         - `link` link to markdown document that should be downloaded
         - `html` html to be rendered
 - new `GfmHeadingIdExtension` markdown renderer extension, that adds github flavored markdown heading functionality
-        - **implements**
-            - `MarkdownRendererExtension`
+    - **implements**
+        - `MarkdownRendererExtension`
+- new `gfmHeadingIdExtension` function, that is factory for GfmHeadingIdExtension with options
 - updated `MdMenuItemDirective` directive
     - is now `standalone`
     - directive directly handles click event, does not need anything else
