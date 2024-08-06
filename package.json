@@ -106,6 +106,8 @@
         "tslib": "2.6.2",
         "typescript": "5.4.5"
     },
+    "module": "./es2022/src/index.js",
+    "typings": "./src/index.d.ts",
     "exports": {
         "./package.json": {
             "default": "./package.json"
