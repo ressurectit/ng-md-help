@@ -112,6 +112,12 @@
         "./package.json": {
             "default": "./package.json"
         },
+        "./styles": {
+            "sass": "./styles/index.scss"
+        },
+        "./styles/themes/*": {
+            "sass": "./styles/themes/*.scss"
+        },
         "./typings/*": {
             "types": "./typings/*/index.d.ts"
         },

@@ -30,14 +30,21 @@ export function handleRouterLink(event: MouseEvent, router: Router, document: Do
 
     const parsedUrl = router.parseUrl(hrefValue);
 
-    router.navigateByUrl(parsedUrl).then(success =>
+    if(parsedUrl.root.hasChildren())
     {
-        //scroll into view
-        if(parsedUrl.fragment && success)
+        router.navigateByUrl(parsedUrl).then(success =>
         {
-            document.querySelector(`#${parsedUrl.fragment}`)?.scrollIntoView({behavior: 'smooth'});
-        }
-    });
+            //scroll into view
+            if(parsedUrl.fragment && success)
+            {
+                document.querySelector(`#${parsedUrl.fragment}`)?.scrollIntoView({behavior: 'smooth'});
+            }
+        });
+    }
+    else if(parsedUrl.fragment)
+    {
+        document.querySelector(`#${parsedUrl.fragment}`)?.scrollIntoView({behavior: 'smooth'});
+    }
 
     event.preventDefault();
     event.stopPropagation();
@@ -51,5 +58,5 @@ export function handleRouterLink(event: MouseEvent, router: Router, document: Do
  */
 export function getCurrentUrlPrefix(document: Document): string
 {
-    return `${document.location.protocol}//${document.location.host}${document.location.port ? `:${document.location.port}` : ''}`;
+    return `${document.location.protocol}//${document.location.host}`;
 }

@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 10.0.1 (2025-02-13)
+
+### Bug Fixes
+
+- fixed navigation to fragments without 'paths'
+
 ## Version 10.0.0 (2024-08-06)
 
 ### Features
