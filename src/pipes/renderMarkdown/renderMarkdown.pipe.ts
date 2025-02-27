@@ -5,7 +5,7 @@ import {MarkdownRenderer} from '../../services';
 /**
  * Converts markdown string into html
  */
-@Pipe({name: 'renderMarkdown'})
+@Pipe({name: 'renderMarkdown', standalone: true})
 export class RenderMarkdownPipe implements PipeTransform
 {
     //######################### protected properties #########################

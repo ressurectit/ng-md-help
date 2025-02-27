@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 10.0.2 (2025-02-27)
+
+### Bug Fixes
+
+- fixed `RenderMarkdownPipe`, is not correctly standalone
+
 ## Version 10.0.1 (2025-02-13)
 
 ### Bug Fixes
