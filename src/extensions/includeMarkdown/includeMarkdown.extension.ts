@@ -1,9 +1,11 @@
 import {inject, Injectable, Injector, PLATFORM_ID} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {isPlatformBrowser} from '@angular/common';
-import {MarkdownRenderer, MarkdownRendererExtension} from '@anglr/md-help';
 import {lastValueFrom} from '@jscrpt/common/rxjs';
 import {MarkedExtension, Token, Tokens} from 'marked';
+
+import {MarkdownRendererExtension} from '../../interfaces';
+import {MarkdownRenderer} from '../../services';
 
 /**
  * Definition of include markdown token
@@ -63,7 +65,6 @@ export class IncludeMarkdownExtension implements MarkdownRendererExtension
 
         this.ɵmarkedExtension = 
         {
-            useNewRenderer: true,
             async: true,
             walkTokens: async (token) =>
             {

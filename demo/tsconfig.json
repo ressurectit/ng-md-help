@@ -19,7 +19,7 @@
         "esModuleInterop": true,
         "importHelpers": true,
         "useDefineForClassFields": false,
-        "skipLibCheck": false,
+        "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "newLine": "lf",
         "moduleResolution": "node",

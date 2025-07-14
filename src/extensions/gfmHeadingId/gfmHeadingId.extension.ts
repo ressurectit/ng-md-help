@@ -1,10 +1,11 @@
 import {Inject, inject, Injectable, OnDestroy, Optional} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
-import {MarkdownRendererExtension} from '@anglr/md-help';
 import {validHtmlId} from '@jscrpt/common';
 import GithubSlugger from 'github-slugger';
 import {MarkedExtension, Tokens} from 'marked';
 import {Subscription} from 'rxjs';
+
+import {MarkdownRendererExtension} from '../../interfaces';
 
 /**
  * Extension that adds github flavored markdown heading functionality
@@ -57,7 +58,6 @@ export class GfmHeadingIdExtension implements MarkdownRendererExtension, OnDestr
         this.ɵmarkedExtension =
         {
             async: true,
-            useNewRenderer: true,
             renderer:
             {
                 heading({depth, text, tokens}: Tokens.Heading)

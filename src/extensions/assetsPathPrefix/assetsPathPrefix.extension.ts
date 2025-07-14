@@ -1,6 +1,7 @@
 import {Inject, Injectable, Optional} from '@angular/core';
-import {MarkdownRendererExtension} from '@anglr/md-help';
 import {MarkedExtension, Tokens} from 'marked';
+
+import {MarkdownRendererExtension} from '../../interfaces';
 
 /**
  * Extension that adds assets path prefix functionality to images links
@@ -30,7 +31,6 @@ export class AssetsPathPrefixExtension implements MarkdownRendererExtension
     {
         this.ɵmarkedExtension = 
         {
-            useNewRenderer: true,
             async: true,
             renderer:
             {

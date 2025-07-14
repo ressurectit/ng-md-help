@@ -1,5 +1,25 @@
 # Changelog
 
+## Version 11.0.0 (2025-07-14)
+
+### Features
+
+- new `TableMarkdownIndexExtension` marked extension, that adds new `table markdown index` functionality, adding support for including start index and end index of markdown table into resulting html
+- new `IndexedToken` interface, which is definition of indexed token, stores index of start of markdow represented by this token
+    - **extends**
+        - `Tokens.Table`
+    - **properties**
+        - `index` starting index in original markdown
+
+### BREAKING CHANGES
+
+- minimal supported version of `highlight.js` is `11.11.1`
+- minimal supported version of `dompurify` is `3.2.6`
+- minimal supported version of `marked` is `16.0.0`
+- minimal supported version of `mermaid` is `11.8.1`
+- minimal supported version of `marked-base-url` is `1.1.7`
+- minimal supported version of `marked-highlight` is `2.2.2`
+
 ## Version 10.0.2 (2025-02-27)
 
 ### Bug Fixes

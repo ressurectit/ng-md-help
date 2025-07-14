@@ -62,7 +62,6 @@ export class MermaidExtension implements MarkdownRendererExtension
     {
         this.ɵmarkedExtension =
         {
-            useNewRenderer: true,
             async: true,
             walkTokens: async (token: Token|MermaidCode) =>
             {

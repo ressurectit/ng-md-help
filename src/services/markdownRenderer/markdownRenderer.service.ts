@@ -26,7 +26,6 @@ export class MarkdownRenderer
         this.marked = new Marked(
         {
             async: true,
-            useNewRenderer: true,
         },
         ...extensions.map(itm => itm.markedExtension));
     }
